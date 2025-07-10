@@ -1,8 +1,8 @@
 version: 0.2
 env:
   secrets-manager: 
-    DOCKERHUB_USERNAME: quyettranvu123
-    DOCKERHUB_PASSWORD: 13112000Nhatrang
+    DOCKERHUB_USERNAME: dockerhub-username-secret
+    DOCKERHUB_PASSWORD: dockerhub-password-secret
 phases:
   pre_build:
     commands:
