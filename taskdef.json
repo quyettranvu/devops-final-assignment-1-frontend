@@ -1,0 +1,25 @@
+
+{
+    "executionRoleArn": "arn:aws:iam::309814440714:role/final-assignment-task-execution-role",
+    "containerDefinitions": [
+        {
+            "name": "nodejs-container",
+            "image": "309814440714.dkr.ecr.ap-southeast-1.amazonaws.com/devops-final-assignment-frontend:latest",
+            "essential": true,
+            "portMappings": [
+                {
+                    "hostPort": 3000,
+                    "protocol": "tcp",
+                    "containerPort": 3000
+                }
+            ]
+        }
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "networkMode": "awsvpc",
+    "cpu": "512",
+    "memory": "1024",
+    "family": "frontend-task-definition"
+}

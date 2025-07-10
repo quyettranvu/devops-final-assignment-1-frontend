@@ -1,0 +1,35 @@
+version: 0.2
+env:
+  secrets-manager: 
+    DOCKERHUB_USERNAME: quyettranvu123
+    DOCKERHUB_PASSWORD: 13112000Nhatrang
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Docker Hub...
+      - REPOSITORY_URI=309814440714.dkr.ecr.ap-southeast-1.amazonaws.com/devops-final-assignment-frontend
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 309814440714.dkr.ecr.ap-southeast-1.amazonaws.com
+
+  build:
+    commands:
+      - echo Build started on `date`
+      - docker build -t final-assignment-frontend:latest .
+      - docker tag final-assignment-frontend:latest $REPOSITORY_URI:latest
+      - docker tag final-assignment-frontend:latest $REPOSITORY_URI:$COMMIT_HASH
+
+  post_build:
+    commands:
+      - echo Pushing the Docker image...
+      - docker push $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:$COMMIT_HASH
+      - echo Build completed on `date`
+      - echo Writing image definitions file...
+      - printf '[{"name":"nodejs-container","imageUri":"%s"}]'
+        $REPOSITORY_URI:$COMMIT_HASH > imagedefinitions.json
+      - cat imagedefinitions.json
+artifacts:
+  files: 
+    - imagedefinitions.json
